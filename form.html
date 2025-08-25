@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Registration Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+
+        .form-group input.success {
+            border-color: #27ae60;
+            background-color: #f2fdf2;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-strength {
+            height: 5px;
+            margin-top: 5px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .password-strength.weak {
+            background: #e74c3c;
+            width: 33%;
+        }
+
+        .password-strength.medium {
+            background: #f39c12;
+            width: 66%;
+        }
+
+        .password-strength.strong {
+            background: #27ae60;
+            width: 100%;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.4);
+        }
+
+        .social-login {
+            margin-top: 30px;
+        }
+
+        .social-login h3 {
+            color: #333;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .social-login h3::before,
+        .social-login h3::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .social-login h3::before {
+            left: 0;
+        }
+
+        .social-login h3::after {
+            right: 0;
+        }
+
+        .social-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn.google {
+            border-color: #4285f4;
+            color: #4285f4;
+        }
+
+        .social-btn.facebook {
+            border-color: #1877f2;
+            color: #1877f2;
+        }
+
+        .social-btn.instagram {
+            border-color: #e4405f;
+            color: #e4405f;
+        }
+
+        .social-btn .icon {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+            position: relative;
+        }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+            z-index: 1;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e1e5e9;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .floating-label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: #999;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-group input:focus + .floating-label,
+        .form-group input:not(:placeholder-shown) + .floating-label {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            color: #667eea;
+            background: white;
+            padding: 0 5px;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin: 0 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .step-dot.active {
+            background-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Create Account</h1>
+            <p>Join us today and get started</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required>
+                <span class="error-message" id="nameError">Please enter your full name</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+                <span class="error-message" id="emailError">Please enter a valid email</span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <span class="show-password" onclick="togglePassword('password')">👁️</span>
+                <div class="password-strength" id="passwordStrength"></div>
+                <span class="error-message" id="passwordError">Password must be at least 8 characters</span>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <span class="show-password" onclick="togglePassword('confirmPassword')">👁️</span>
+                <span class="error-message" id="confirmPasswordError">Passwords do not match</span>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <a href="#" style="color: #667eea;">Terms and Conditions</a></label>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                Create Account
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <div class="login-section">
+            <button type="button" class="login-btn" onclick="window.location.href='login.html'">
+                Login to Existing Account
+            </button>
+        </div>
+
+        <div class="social-login">
+            <h3>Continue with</h3>
+            <div class="social-buttons">
+                <button type="button" class="social-btn google" onclick="socialLogin('google')">
+                    <span class="icon">G</span>
+                    Continue with Google
+                </button>
+                <button type="button" class="social-btn facebook" onclick="socialLogin('facebook')">
+                    <span class="icon">f</span>
+                    Continue with Facebook
+                </button>
+                <button type="button" class="social-btn instagram" onclick="socialLogin('instagram')">
+                    <span class="icon">📷</span>
+                    Continue with Instagram
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation and interaction
+        const form = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const progressFill = document.getElementById('progressFill');
+
+        // Input fields
+        const fullName = document.getElementById('fullName');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const terms = document.getElementById('terms');
+
+        // Error messages
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+        // Validation functions
+        function validateName() {
+            const isValid = fullName.value.trim().length >= 2;
+            fullName.classList.toggle('error', !isValid);
+            fullName.classList.toggle('success', isValid);
+            nameError.style.display = isValid ? 'none' : 'block';
+            return isValid;
+        }
+
+        function validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = emailRegex.test(email.value);
+            email.classList.toggle('error', !isValid);
+            email.classList.toggle('success', isValid);
+            emailError.style.display = isValid ? 'none' : 'block';
+            return isValid;
+        }
+
+        function validatePassword() {
+            const isValid = password.value.length >= 8;
+            password.classList.toggle('error', !isValid);
+            password.classList.toggle('success', isValid);
+            passwordError.style.display = isValid ? 'none' : 'block';
+            
+            // Update password strength
+            const strengthIndicator = document.getElementById('passwordStrength');
+            if (password.value.length === 0) {
+                strengthIndicator.className = 'password-strength';
+            } else if (password.value.length < 4) {
+                strengthIndicator.className = 'password-strength weak';
+            } else if (password.value.length < 8) {
+                strengthIndicator.className = 'password-strength medium';
+            } else {
+                strengthIndicator.className = 'password-strength strong';
+            }
+            
+            return isValid;
+        }
+
+        function validateConfirmPassword() {
+            const isValid = confirmPassword.value === password.value && confirmPassword.value.length > 0;
+            confirmPassword.classList.toggle('error', !isValid);
+            confirmPassword.classList.toggle('success', isValid);
+            confirmPasswordError.style.display = isValid ? 'none' : 'block';
+            return isValid;
+        }
+
+        function updateProgressBar() {
+            const totalFields = 4;
+            const filledFields = Array.from(document.querySelectorAll('input[required]'))
+                .filter(input => input.value.trim() !== '').length;
+            const progress = (filledFields / totalFields) * 100;
+            progressFill.style.width = progress + '%';
+        }
+
+        function validateForm() {
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+            const isConfirmPasswordValid = validateConfirmPassword();
+            const isTermsChecked = terms.checked;
+
+            submitBtn.disabled = !(isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isTermsChecked);
+            updateProgressBar();
+        }
+
+        // Event listeners
+        fullName.addEventListener('input', validateForm);
+        email.addEventListener('input', validateForm);
+        password.addEventListener('input', validateForm);
+        confirmPassword.addEventListener('input', validateForm);
+        terms.addEventListener('change', validateForm);
+
+        // Form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!submitBtn.disabled) {
+                alert('Registration successful! Welcome to our platform.');
+                form.reset();
+                submitBtn.disabled = true;
+                progressFill.style.width = '0%';
+            }
+        });
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        // Social login function
+        function socialLogin(provider) {
+            alert(`Redirecting to ${provider.charAt(0).toUpperCase() + provider.slice(1)} login...`);
+            // In a real application, this would redirect to OAuth providers
+        }
+
+        // Initialize
+        validateForm();
+    </script>
+</body>
+</html>
